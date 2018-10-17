@@ -5,7 +5,7 @@
  *      Author: andrew
  */
 
-//TODO: Draw the FPS counter
+//TODO: Utilise VBO and VAOs instead of immediate mode
 
 #ifndef DRAWUTILS_H_
 #define DRAWUTILS_H_
