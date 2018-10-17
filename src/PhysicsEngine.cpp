@@ -13,13 +13,13 @@
 
 PhysicsEngine::PhysicsEngine(GameState *state)
 {
-	m_mode = &(state->m_mode);
-	m_slimes = state->m_slimes;
-	m_ball = state->m_ball;
-	m_leftFoulTime = &(state->m_leftFoulTime);
-	m_rightFoulTime = &(state->m_rightFoulTime);
-	m_leftTeamScore = &(state->m_leftTeamScore);
-	m_rightTeamScore = &(state->m_rightTeamScore);
+	m_mode = &(state->mode);
+	m_slimes = state->slimes;
+	m_ball = state->ball;
+	m_leftFoulTime = &(state->leftFoulTime);
+	m_rightFoulTime = &(state->rightFoulTime);
+	m_leftTeamScore = &(state->leftTeamScore);
+	m_rightTeamScore = &(state->rightTeamScore);
 	m_resetFlag = false;
 	m_physicsAccel = true;
 }
@@ -42,7 +42,7 @@ void PhysicsEngine::process(double dt)
 		processCollisions(dt);
 		checkFouls(dt);
 		processFouls();
-		printf("The ball is at (%f, %f)\n", m_ball->m_x, m_ball->m_y);
+		printf("The ball is at (%f, %f)\n", m_ball->x, m_ball->y);
 	}
 	else if (m_resetFlag)
 	{
@@ -54,136 +54,136 @@ void PhysicsEngine::processSlimes(double dt)
 {
 	for (SlimeData *slime : *m_slimes)
 	{
-		if ((slime->m_movement & SLIME_JUMP) == SLIME_JUMP && slime->m_grounded)
+		if ((slime->movement & SLIME_JUMP) == SLIME_JUMP && slime->grounded)
 		{
-			slime->m_preJump = true;
+			slime->preJump = true;
 		}
 
-		if ((slime->m_movement & SLIME_LEFT) == SLIME_LEFT
-				&& (slime->m_movement & SLIME_RIGHT) != SLIME_RIGHT)
+		if ((slime->movement & SLIME_LEFT) == SLIME_LEFT
+				&& (slime->movement & SLIME_RIGHT) != SLIME_RIGHT)
 		{
-			slime->m_velX = -HORIZ_VEL;
+			slime->velX = -HORIZ_VEL;
 		}
-		else if ((slime->m_movement & SLIME_RIGHT) == SLIME_RIGHT
-				&& (slime->m_movement & SLIME_LEFT) != SLIME_LEFT)
+		else if ((slime->movement & SLIME_RIGHT) == SLIME_RIGHT
+				&& (slime->movement & SLIME_LEFT) != SLIME_LEFT)
 		{
-			slime->m_velX = HORIZ_VEL;
+			slime->velX = HORIZ_VEL;
 		}
 		else
 		{
-			slime->m_velX = 0.0;
+			slime->velX = 0.0;
 		}
 
 		// Check if slime has become grounded
-		if (slime->m_y <= GROUND_LEVEL && !slime->m_preJump)
+		if (slime->y <= GROUND_LEVEL && !slime->preJump)
 		{
-			slime->m_y = GROUND_LEVEL;
-			slime->m_velY = 0.0;
-			slime->m_grounded = true;
+			slime->y = GROUND_LEVEL;
+			slime->velY = 0.0;
+			slime->grounded = true;
 		}
 
 		// If ungrounded, apply gravity
-		if (!slime->m_grounded)
+		if (!slime->grounded)
 		{
-			slime->m_velY += GRAVITY * dt;
+			slime->velY += GRAVITY * dt;
 		}
 
 		// Check if slime wants to jump
-		if (slime->m_preJump && slime->m_grounded)
+		if (slime->preJump && slime->grounded)
 		{
-			slime->m_grounded = false;
-			slime->m_velY = JUMP_VEL;
-			slime->m_preJump = false;
+			slime->grounded = false;
+			slime->velY = JUMP_VEL;
+			slime->preJump = false;
 		}
 
 		// Move according to velocity
-		slime->m_x += slime->m_velX * dt;
-		slime->m_y += slime->m_velY * dt;
+		slime->x += slime->velX * dt;
+		slime->y += slime->velY * dt;
 	}
 }
 
 void PhysicsEngine::processBall(double dt)
 {
 	// Bounce if hitting the ground
-	if (m_ball->m_y - m_ball->m_height / 2 <= GROUND_LEVEL)
+	if (m_ball->y - m_ball->height / 2 <= GROUND_LEVEL)
 	{
-		m_ball->m_velY = -m_ball->m_velY * GROUND_BALL_RESTI;
-		m_ball->m_y = GROUND_LEVEL + m_ball->m_height / 2.0
-				- (m_ball->m_velY * dt) + 0.001;
+		m_ball->velY = -m_ball->velY * GROUND_BALL_RESTI;
+		m_ball->y = GROUND_LEVEL + m_ball->height / 2.0
+				- (m_ball->velY * dt) + 0.001;
 	}
 	// Bounce if hitting left crossbar from side
-	else if (m_ball->m_x - m_ball->m_width / 2.0 < -GOALPOST_RADIUS
-			&& m_ball->m_prevX - m_ball->m_width / 2.0 > -GOALPOST_RADIUS
-			&& m_ball->m_y - m_ball->m_height / 2.0
+	else if (m_ball->x - m_ball->width / 2.0 < -GOALPOST_RADIUS
+			&& m_ball->prevX - m_ball->width / 2.0 > -GOALPOST_RADIUS
+			&& m_ball->y - m_ball->height / 2.0
 					< GROUND_LEVEL + GOAL_HEIGHT + GOALPOST_WIDTH / 2.0
-			&& m_ball->m_y + m_ball->m_height / 2.0
+			&& m_ball->y + m_ball->height / 2.0
 					> GROUND_LEVEL + GOAL_HEIGHT - GOALPOST_WIDTH / 2.0)
 	{
-		m_ball->m_velX = -m_ball->m_velX * GROUND_BALL_RESTI;
-		m_ball->m_x = -GOALPOST_RADIUS + m_ball->m_width / 2.0
-				- (m_ball->m_velX * dt) + 0.001;
+		m_ball->velX = -m_ball->velX * GROUND_BALL_RESTI;
+		m_ball->x = -GOALPOST_RADIUS + m_ball->width / 2.0
+				- (m_ball->velX * dt) + 0.001;
 	}
 	// Bounce if hitting right crossbar from side
-	else if (m_ball->m_x + m_ball->m_width / 2.0 > GOALPOST_RADIUS
-			&& m_ball->m_prevX + m_ball->m_width / 2.0 < GOALPOST_RADIUS
-			&& m_ball->m_y - m_ball->m_height / 2.0
+	else if (m_ball->x + m_ball->width / 2.0 > GOALPOST_RADIUS
+			&& m_ball->prevX + m_ball->width / 2.0 < GOALPOST_RADIUS
+			&& m_ball->y - m_ball->height / 2.0
 					< GROUND_LEVEL + GOAL_HEIGHT + GOALPOST_WIDTH / 2.0
-			&& m_ball->m_y + m_ball->m_height / 2.0
+			&& m_ball->y + m_ball->height / 2.0
 					> GROUND_LEVEL + GOAL_HEIGHT - GOALPOST_WIDTH / 2.0)
 	{
-		m_ball->m_velX = -m_ball->m_velX * GROUND_BALL_RESTI;
-		m_ball->m_x = GOALPOST_RADIUS - m_ball->m_width / 2.0
-				+ (m_ball->m_velX * dt) - 0.001;
+		m_ball->velX = -m_ball->velX * GROUND_BALL_RESTI;
+		m_ball->x = GOALPOST_RADIUS - m_ball->width / 2.0
+				+ (m_ball->velX * dt) - 0.001;
 	}
 	// Bounce if hitting crossbar from top
-	else if (m_ball->m_prevY - m_ball->m_height / 2.0
+	else if (m_ball->prevY - m_ball->height / 2.0
 			> GROUND_LEVEL + GOAL_HEIGHT
-			&& m_ball->m_y - m_ball->m_height / 2.0
+			&& m_ball->y - m_ball->height / 2.0
 					<= GROUND_LEVEL + GOAL_HEIGHT
-			&& (m_ball->m_x - m_ball->m_width / 2.0 < -GOALPOST_RADIUS
-					|| m_ball->m_x + m_ball->m_width / 2.0 > GOALPOST_RADIUS))
+			&& (m_ball->x - m_ball->width / 2.0 < -GOALPOST_RADIUS
+					|| m_ball->x + m_ball->width / 2.0 > GOALPOST_RADIUS))
 	{
-		m_ball->m_velY = -m_ball->m_velY * GROUND_BALL_RESTI;
-		m_ball->m_y = GROUND_LEVEL + GOAL_HEIGHT + m_ball->m_height / 2.0
-				- (m_ball->m_velY * dt) + 0.001;
+		m_ball->velY = -m_ball->velY * GROUND_BALL_RESTI;
+		m_ball->y = GROUND_LEVEL + GOAL_HEIGHT + m_ball->height / 2.0
+				- (m_ball->velY * dt) + 0.001;
 	}
 	// Bounce if hitting crossbar from bottom
-	else if (m_ball->m_prevY + m_ball->m_height / 2.0
+	else if (m_ball->prevY + m_ball->height / 2.0
 			< GROUND_LEVEL + GOAL_HEIGHT
-			&& m_ball->m_y + m_ball->m_height / 2.0 > GROUND_LEVEL + GOAL_HEIGHT
-			&& (m_ball->m_x - m_ball->m_width / 2.0 < -GOALPOST_RADIUS
-					|| m_ball->m_x + m_ball->m_width / 2.0 > GOALPOST_RADIUS))
+			&& m_ball->y + m_ball->height / 2.0 > GROUND_LEVEL + GOAL_HEIGHT
+			&& (m_ball->x - m_ball->width / 2.0 < -GOALPOST_RADIUS
+					|| m_ball->x + m_ball->width / 2.0 > GOALPOST_RADIUS))
 	{
-		m_ball->m_velY = -m_ball->m_velY * GROUND_BALL_RESTI;
-		m_ball->m_y = GROUND_LEVEL + GOAL_HEIGHT - m_ball->m_height / 2.0
-				+ (m_ball->m_velY * dt) + 0.001;
+		m_ball->velY = -m_ball->velY * GROUND_BALL_RESTI;
+		m_ball->y = GROUND_LEVEL + GOAL_HEIGHT - m_ball->height / 2.0
+				+ (m_ball->velY * dt) + 0.001;
 	}
 	// Bounce if hitting left wall
-	else if (m_ball->m_x - m_ball->m_width / 2 <= -1.0)
+	else if (m_ball->x - m_ball->width / 2 <= -1.0)
 	{
-		m_ball->m_velX = -m_ball->m_velX * GROUND_BALL_RESTI;
-		m_ball->m_x = -1.0 + m_ball->m_width / 2 - (m_ball->m_velX * dt)
+		m_ball->velX = -m_ball->velX * GROUND_BALL_RESTI;
+		m_ball->x = -1.0 + m_ball->width / 2 - (m_ball->velX * dt)
 				+ 0.001;
 	}
 	// Bounce if hitting right wall
-	else if (m_ball->m_x + m_ball->m_width / 2 >= 1.0)
+	else if (m_ball->x + m_ball->width / 2 >= 1.0)
 	{
-		m_ball->m_velX = -m_ball->m_velX * GROUND_BALL_RESTI;
-		m_ball->m_x = 1.0 - m_ball->m_width / 2 + (m_ball->m_velX * dt) - 0.001;
+		m_ball->velX = -m_ball->velX * GROUND_BALL_RESTI;
+		m_ball->x = 1.0 - m_ball->width / 2 + (m_ball->velX * dt) - 0.001;
 	}
 	else
 	{
 		// Accelerate ball according to gravity
-		m_ball->m_velY += GRAVITY * dt;
+		m_ball->velY += GRAVITY * dt;
 	}
 
 	// Store the ball's current position for collision detection next frame
-	m_ball->m_prevX = m_ball->m_x;
-	m_ball->m_prevY = m_ball->m_y;
+	m_ball->prevX = m_ball->x;
+	m_ball->prevY = m_ball->y;
 
 	// Change ball position according to velocity
-	m_ball->m_x += m_ball->m_velX * dt;
-	m_ball->m_y += m_ball->m_velY * dt;
+	m_ball->x += m_ball->velX * dt;
+	m_ball->y += m_ball->velY * dt;
 }
 
 void PhysicsEngine::processCollisions(double dt)
@@ -194,10 +194,10 @@ void PhysicsEngine::processCollisions(double dt)
 		// Get the angle from positive x-axis on slime to ball's centre
 		// Get vector from slime centre to ball centre
 		std::vector<double> v
-		{ m_ball->m_x - slime->m_x, m_ball->m_y - slime->m_y };
+		{ m_ball->x - slime->x, m_ball->y - slime->y };
 
 		// If ball is below the slime, there can be no collision
-		if (v[1] < -m_ball->m_height)
+		if (v[1] < -m_ball->height)
 		{
 			continue;
 		}
@@ -212,8 +212,8 @@ void PhysicsEngine::processCollisions(double dt)
 		}
 
 		// Get the radius on the slime pointing towards the ball
-		double a = slime->m_width / 2.0;
-		double b = slime->m_height / 2.0;
+		double a = slime->width / 2.0;
+		double b = slime->height / 2.0;
 		double radius = a * b
 				/ std::sqrt(
 						pow(a, 2) * pow(sin(theta), 2)
@@ -221,22 +221,22 @@ void PhysicsEngine::processCollisions(double dt)
 
 		// If the slime has jumped on top of the ball, pop it up above with
 		// zero velocity
-		if (m_ball->m_x > slime->m_x - slime->m_width / 2
-				&& m_ball->m_x < slime->m_x + slime->m_width / 2 && v[1] < 0)
+		if (m_ball->x > slime->x - slime->width / 2
+				&& m_ball->x < slime->x + slime->width / 2 && v[1] < 0)
 		{
-			m_ball->m_y = slime->m_y + slime->m_height;
-			m_ball->m_velX = 0;
-			m_ball->m_velY = 0;
+			m_ball->y = slime->y + slime->height;
+			m_ball->velX = 0;
+			m_ball->velY = 0;
 			continue;
 		}
 
 		// Check if the distance between ball and slime's centre is less than radius
 		if (pow(v[0], 2) + pow(v[1], 2)
-				<= pow(radius + m_ball->m_width / 2.0, 2))
+				<= pow(radius + m_ball->width / 2.0, 2))
 		{
 			// Calculate the ball's current speed
 			double ballSpeed = std::sqrt(
-					pow(m_ball->m_velX, 2) + pow(m_ball->m_velY, 2));
+					pow(m_ball->velX, 2) + pow(m_ball->velY, 2));
 
 			// Get the magnitude of v
 			double vMag = std::sqrt(pow(v[0], 2) + pow(v[1], 2));
@@ -250,21 +250,21 @@ void PhysicsEngine::processCollisions(double dt)
 			newVel[1] *= SLIME_BALL_RESTI;
 
 			std::vector<double> pushOut
-			{ v[0] * (radius + m_ball->m_width / 2.0 + 0.001) / vMag, v[1]
-					* (radius + m_ball->m_width / 2.0 + 0.001) / vMag };
+			{ v[0] * (radius + m_ball->width / 2.0 + 0.001) / vMag, v[1]
+					* (radius + m_ball->width / 2.0 + 0.001) / vMag };
 
-			m_ball->m_x = slime->m_x + pushOut[0];
-			m_ball->m_y = slime->m_y + pushOut[1];
+			m_ball->x = slime->x + pushOut[0];
+			m_ball->y = slime->y + pushOut[1];
 
 			// Add the velocity of the slime to the new ball velocity
-			newVel[0] += slime->m_velX
-					* std::abs(v[0] / (slime->m_width / 2.0));
-			newVel[1] += slime->m_velY
-					* std::abs(v[1] / (slime->m_height / 2.0));
+			newVel[0] += slime->velX
+					* std::abs(v[0] / (slime->width / 2.0));
+			newVel[1] += slime->velY
+					* std::abs(v[1] / (slime->height / 2.0));
 
 			// Set the new ball velocity
-			m_ball->m_velX = newVel[0];
-			m_ball->m_velY = newVel[1];
+			m_ball->velX = newVel[0];
+			m_ball->velY = newVel[1];
 		}
 	}
 }
@@ -273,16 +273,16 @@ void PhysicsEngine::processGoals()
 {
 	// Check for goal
 	// Left
-	if (m_ball->m_x + m_ball->m_width / 2.0 < -GOALPOST_RADIUS
-			&& m_ball->m_y + m_ball->m_height / 2.0
+	if (m_ball->x + m_ball->width / 2.0 < -GOALPOST_RADIUS
+			&& m_ball->y + m_ball->height / 2.0
 					< GROUND_LEVEL + GOAL_HEIGHT)
 	{
 		*m_mode = goal;
 		*m_rightTeamScore += 1;
 	}
 	// Right
-	else if (m_ball->m_x - m_ball->m_width / 2.0 > GOALPOST_RADIUS
-			&& m_ball->m_y + m_ball->m_height / 2.0
+	else if (m_ball->x - m_ball->width / 2.0 > GOALPOST_RADIUS
+			&& m_ball->y + m_ball->height / 2.0
 					< GROUND_LEVEL + GOAL_HEIGHT)
 	{
 		*m_mode = goal;
@@ -295,12 +295,12 @@ void PhysicsEngine::checkFouls(double dt)
 	for (SlimeData *slime : *m_slimes)
 	{
 		// Store the team the slime is on, based on the direction its looking
-		int team = slime->m_lookingRight ? 1 : 2;
+		int team = slime->lookingRight ? 1 : 2;
 
 		if (team == 1)
 		{
 			// If left team is fouling
-			if (slime->m_x < -1.0 + FOUL_AREA_WIDTH)
+			if (slime->x < -1.0 + FOUL_AREA_WIDTH)
 			{
 				*m_leftFoulTime -= dt;
 			}
@@ -314,7 +314,7 @@ void PhysicsEngine::checkFouls(double dt)
 		else // team == 2
 		{
 			// If right team is fouling
-			if (slime->m_x > 1.0 - FOUL_AREA_WIDTH)
+			if (slime->x > 1.0 - FOUL_AREA_WIDTH)
 			{
 				*m_rightFoulTime -= dt;
 			}
@@ -351,20 +351,20 @@ void PhysicsEngine::reset()
 {
 	if (NUM_PLAYERS == 2)
 	{
-		(*m_slimes)[0]->m_x = -SLIME_INIT_X_RADIUS;
-		(*m_slimes)[0]->m_y = SLIME_INIT_Y;
-		(*m_slimes)[0]->m_velX = 0.0;
-		(*m_slimes)[0]->m_velY = 0.0;
-		(*m_slimes)[1]->m_x = SLIME_INIT_X_RADIUS;
-		(*m_slimes)[1]->m_y = SLIME_INIT_Y;
-		(*m_slimes)[1]->m_velX = 0.0;
-		(*m_slimes)[1]->m_velY = 0.0;
+		(*m_slimes)[0]->x = -SLIME_INIT_X_RADIUS;
+		(*m_slimes)[0]->y = SLIME_INIT_Y;
+		(*m_slimes)[0]->velX = 0.0;
+		(*m_slimes)[0]->velY = 0.0;
+		(*m_slimes)[1]->x = SLIME_INIT_X_RADIUS;
+		(*m_slimes)[1]->y = SLIME_INIT_Y;
+		(*m_slimes)[1]->velX = 0.0;
+		(*m_slimes)[1]->velY = 0.0;
 	}
 
-	m_ball->m_x = BALL_INIT_X;
-	m_ball->m_y = BALL_INIT_Y;
-	m_ball->m_velX = 0.0;
-	m_ball->m_velY = 0.0;
+	m_ball->x = BALL_INIT_X;
+	m_ball->y = BALL_INIT_Y;
+	m_ball->velX = 0.0;
+	m_ball->velY = 0.0;
 
 	*m_leftFoulTime = FOUL_DURATION_MAX;
 	*m_rightFoulTime = FOUL_DURATION_MAX;

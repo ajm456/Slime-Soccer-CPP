@@ -49,31 +49,31 @@ void WindowManager::draw(GameState *state)
 
 	// Draw the ball
 	int numBallSegments = 50;
-	draw::ball(numBallSegments, state->m_ball);
+	draw::ball(numBallSegments, state->ball);
 
 	// Draw the slimes
-	std::vector<SlimeData*> *slimes = state->m_slimes;
+	std::vector<SlimeData*> *slimes = state->slimes;
 	int numSlimeSegments = 15;
 	int numEyeSegments = 15;
 	for (SlimeData *slime : *slimes)
 	{
-		draw::slime(numSlimeSegments, numEyeSegments, slime, state->m_ball);
+		draw::slime(numSlimeSegments, numEyeSegments, slime, state->ball);
 	}
 
 	// Draw the ball indicator if required
 	int numIndicatorSegments = 50;
-	if (state->m_ball->m_y > 1.0)
+	if (state->ball->y > 1.0)
 	{
-		double indicatorRadius = (state->m_ball->m_y - 1.0) * INDICATOR_SCALE;
-		draw::circle(numIndicatorSegments, state->m_ball->m_x, INDICATOR_Y,
+		double indicatorRadius = (state->ball->y - 1.0) * INDICATOR_SCALE;
+		draw::circle(numIndicatorSegments, state->ball->x, INDICATOR_Y,
 				indicatorRadius, INDICATOR_R, INDICATOR_G, INDICATOR_B);
 	}
 	
 	// Draw the foul bars
 	// Left
-	draw::rect(-1.0, GROUND_LEVEL - FOULBAR_Y_DIFF - FOULBAR_HEIGHT, state->m_leftFoulTime / FOUL_DURATION_MAX, FOULBAR_HEIGHT, state->m_leftTeamColor[0], state->m_leftTeamColor[1], state->m_leftTeamColor[2]);
+	draw::rect(-1.0, GROUND_LEVEL - FOULBAR_Y_DIFF - FOULBAR_HEIGHT, state->leftFoulTime / FOUL_DURATION_MAX, FOULBAR_HEIGHT, state->leftTeamColor[0], state->leftTeamColor[1], state->leftTeamColor[2]);
 	// Right
-	draw::rect(FOUL_DURATION_MAX - state->m_rightFoulTime, GROUND_LEVEL - FOULBAR_Y_DIFF - FOULBAR_HEIGHT, state->m_rightFoulTime / FOUL_DURATION_MAX, FOULBAR_HEIGHT, state->m_rightTeamColor[0], state->m_rightTeamColor[1], state->m_rightTeamColor[2]);
+	draw::rect(FOUL_DURATION_MAX - state->rightFoulTime, GROUND_LEVEL - FOULBAR_Y_DIFF - FOULBAR_HEIGHT, state->rightFoulTime / FOUL_DURATION_MAX, FOULBAR_HEIGHT, state->rightTeamColor[0], state->rightTeamColor[1], state->rightTeamColor[2]);
 	
 	// Draw the goals
 	draw::goals();

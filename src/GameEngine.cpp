@@ -61,10 +61,10 @@ void GameEngine::run()
 			fpsSum += 1.0/fps;
 		}
 		
-		if(m_state->m_mode == play)
+		if(m_state->mode == play)
 		{
 			printf("FPS: %f\n", fpsSum/NUM_FPS_SAMPLES);
-			printf("Score: %i-%i\n\n", m_state->m_leftTeamScore, m_state->m_rightTeamScore);
+			printf("Score: %i-%i\n\n", m_state->leftTeamScore, m_state->rightTeamScore);
 		}
 	}
 
@@ -115,8 +115,8 @@ void GameEngine::input()
 	// Take the 6-bit WindowManager keys bitmask and pass its parts to the
 	// player slimes
 	unsigned char keys = m_wm->keys;
-	m_state->m_slimes->at(0)->m_movement = keys & 0x7;
-	m_state->m_slimes->at(1)->m_movement = (keys & 0x38) >> 3;
+	m_state->slimes->at(0)->movement = keys & 0x7;
+	m_state->slimes->at(1)->movement = (keys & 0x38) >> 3;
 	
 	// Check whether a mode reset key has been pressed in the WindowManager and
 	// pass this information to the PhysicsEngine

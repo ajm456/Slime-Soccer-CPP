@@ -11,56 +11,45 @@
 #include <vector>
 #include "GameParams.h"
 
-struct CircularObjectData
+struct SlimeData
 {
-	double m_x, m_y;
-	double m_velX, m_velY;
-	double m_width, m_height;
-	float m_color[3];
+	double x, y;
+	double velX, velY;
+	double width, height;
+	float color[3];
+	bool grounded, preJump, lookingRight;
+	unsigned char movement;
 
-	CircularObjectData(double x, double y, double width, double height, double angle,
-			float red, float green, float blue)
+	SlimeData(double x, double y, float red, float green, float blue, bool lookingRight) : x(x), y(y), lookingRight(lookingRight)
 	{
-		m_x = x;
-		m_y = y;
-		m_velX = 0.0;
-		m_velY = 0.0;
-		m_width = width;
-		m_height = height;
-		m_color[0] = red;
-		m_color[1] = green;
-		m_color[2] = blue;
-	}
-};
-typedef struct CircularObjectData CircularObjectData;
-
-struct SlimeData: CircularObjectData
-{
-	bool m_grounded, m_preJump, m_lookingRight;
-	unsigned char m_movement;
-
-	SlimeData(double x, double y, double red, double green, double blue, bool lookingRight) :
-			CircularObjectData(x, y, SLIME_WIDTH, SLIME_HEIGHT*ASPECT_RATIO, 180.0, red,
-					green, blue)
-	{
-		m_grounded = true;
-		m_preJump = false;
-		m_movement = 0;
-		m_lookingRight = lookingRight;
+		velX = 0.0;
+		velY = 0.0;
+		width = SLIME_WIDTH;
+		height = SLIME_HEIGHT;
+		color[0] = red;
+		color[1] = green;
+		color[2] = blue;
+		grounded = true;
+		preJump = false;
+		movement = 0;
 	}
 };
 typedef struct SlimeData SlimeData;
 
-struct BallData: CircularObjectData
+struct BallData
 {
-	double m_prevX, m_prevY;
+	double x, y, prevX, prevY;
+	double velX, velY;
+	double width, height;
 	
-	BallData(double x, double y) :
-			CircularObjectData(x, y, 2*BALL_RADIUS, 2*BALL_RADIUS*ASPECT_RATIO, 360.0, BALL_R,
-					BALL_G, BALL_B)
+	BallData(double x, double y) : x(x), y(y)
 	{
-		m_prevX = 0.0;
-		m_prevY = 0.0;
+		prevX = 0.0;
+		prevY = 0.0;
+		velX = 0.0;
+		velY = 0.0;
+		width = BALL_RADIUS*2.0;
+		height = BALL_RADIUS*2.0;
 	}
 };
 
@@ -71,28 +60,26 @@ enum GameMode
 
 struct GameState
 {
-	GameMode m_mode;
-	std::vector<SlimeData*> *m_slimes;
-	BallData *m_ball;
-	double m_leftFoulTime, m_rightFoulTime;
-	float m_leftTeamColor[3], m_rightTeamColor[3];
-	int m_leftTeamScore, m_rightTeamScore;
+	GameMode mode;
+	std::vector<SlimeData*> *slimes;
+	BallData *ball;
+	double leftFoulTime, rightFoulTime;
+	float leftTeamColor[3], rightTeamColor[3];
+	int leftTeamScore, rightTeamScore;
 
-	GameState(std::vector<SlimeData*> *slimes, BallData *ball, std::vector<float> leftColor, std::vector<float> rightColor)
+	GameState(std::vector<SlimeData*> *slimes, BallData *ball, std::vector<float> leftColor, std::vector<float> rightColor) : slimes(slimes), ball(ball)
 	{
-		m_mode = play;
-		m_slimes = slimes;
-		m_ball = ball;
-		m_leftFoulTime = FOUL_DURATION_MAX;
-		m_rightFoulTime = FOUL_DURATION_MAX;
-		m_leftTeamColor[0] = leftColor[0];
-		m_leftTeamColor[1] = leftColor[1];
-		m_leftTeamColor[2] = leftColor[2];
-		m_rightTeamColor[0] = rightColor[0];
-		m_rightTeamColor[1] = rightColor[1];
-		m_rightTeamColor[2] = rightColor[2];
-		m_leftTeamScore = 0;
-		m_rightTeamScore = 0;
+		mode = play;
+		leftFoulTime = FOUL_DURATION_MAX;
+		rightFoulTime = FOUL_DURATION_MAX;
+		leftTeamColor[0] = leftColor[0];
+		leftTeamColor[1] = leftColor[1];
+		leftTeamColor[2] = leftColor[2];
+		rightTeamColor[0] = rightColor[0];
+		rightTeamColor[1] = rightColor[1];
+		rightTeamColor[2] = rightColor[2];
+		leftTeamScore = 0;
+		rightTeamScore = 0;
 	}
 };
 typedef struct GameState GameState;

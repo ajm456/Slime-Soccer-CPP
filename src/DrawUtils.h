@@ -59,16 +59,16 @@ void background()
 
 void slime(int numBodySegments, int numEyeSegments, SlimeData *obj, BallData *ball)
 {
-	double x = obj->m_x;
-	double y = obj->m_y;
-	double width = obj->m_width;
-	double height = obj->m_height;
-	double red = obj->m_color[0];
-	double green = obj->m_color[1];
-	double blue = obj->m_color[2];
+	double x = obj->x;
+	double y = obj->y;
+	double width = obj->width;
+	double height = obj->height;
+	double red = obj->color[0];
+	double green = obj->color[1];
+	double blue = obj->color[2];
 	double eyeY = y + SLIME_HEIGHT/2.0;
 	double eyeX;
-	if (obj->m_lookingRight)
+	if (obj->lookingRight)
 	{
 		eyeX = x + width/4.2;
 	}
@@ -76,7 +76,7 @@ void slime(int numBodySegments, int numEyeSegments, SlimeData *obj, BallData *ba
 	{
 		eyeX = x - width/4.2;
 	}
-	std::vector<double> eyeToBall { ball->m_x - eyeX, ball->m_y - eyeY };
+	std::vector<double> eyeToBall { ball->x - eyeX, ball->y - eyeY };
 	double eyeToBallMag = std::sqrt(pow(eyeToBall[0], 2) + pow(eyeToBall[1], 2));
 	std::vector<double> eyeToPupil { eyeToBall[0] * 0.35*EYE_RADIUS / eyeToBallMag, eyeToBall[1] * 0.35*EYE_RADIUS / eyeToBallMag };
 	double pupilX = eyeX + eyeToPupil[0];
@@ -164,13 +164,13 @@ void slime(int numBodySegments, int numEyeSegments, SlimeData *obj, BallData *ba
 
 void ball(int numSegments, BallData *obj)
 {
-	double x = obj->m_x;
-	double y = obj->m_y;
-	double width = obj->m_width;
-	double height = obj->m_height;
-	double red = obj->m_color[0];
-	double green = obj->m_color[1];
-	double blue = obj->m_color[2];
+	double x = obj->x;
+	double y = obj->y;
+	double width = obj->width;
+	double height = obj->height;
+	double red = BALL_R;
+	double green = BALL_G;
+	double blue = BALL_B;
 
 	std::vector<double> *xCoords = new std::vector<double>(numSegments + 2);
 	std::vector<double> *yCoords = new std::vector<double>(numSegments + 2);
