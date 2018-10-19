@@ -8,9 +8,8 @@
 #ifndef WINDOWMANAGER_H_
 #define WINDOWMANAGER_H_
 
-#include <GLFW/glfw3.h>
-
 #include "GameData.h"
+#include <GLFW/glfw3.h>
 
 class WindowManager
 {

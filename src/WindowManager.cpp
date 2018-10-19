@@ -6,13 +6,12 @@
  */
 
 #include "WindowManager.h"
-#include <iostream>
 #include "GameData.h"
-#include <cmath>
-#include <stdio.h>
 #include "DrawUtils.h"
 #include "GameParams.h"
-
+#include <iostream>
+#include <cmath>
+#include <stdio.h>
 
 unsigned char WindowManager::keys = 0;
 bool WindowManager::resetRequest = false;

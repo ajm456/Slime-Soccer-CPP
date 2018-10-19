@@ -8,8 +8,8 @@
 #ifndef GAMEDATA_H_
 #define GAMEDATA_H_
 
-#include <vector>
 #include "GameParams.h"
+#include <vector>
 
 struct SlimeData
 {

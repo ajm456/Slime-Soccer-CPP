@@ -1,20 +1,23 @@
 /*
  * DrawUtils.h
  *
+ * File containing static functions to draw game objects using OpenGL. Uses
+ * immediate mode instead of the typical VAO/VBO/EBO configuration as the
+ * latter is somewhat overkill for the simplicity of Slime Soccer.
+ * 
  *  Created on: 10 Oct 2018
  *      Author: andrew
  */
 
-//TODO: Utilise VBO and VAOs instead of immediate mode
 
 #ifndef DRAWUTILS_H_
 #define DRAWUTILS_H_
 
+#include "GameParams.h"
 #include <vector>
 #include <iostream>
 #include <cmath>
 #include <stdio.h>
-#include "GameParams.h"
 
 namespace draw
 {

@@ -7,11 +7,10 @@
 
 #include "GameEngine.h"
 #include "GameData.h"
-#include <vector>
+#include "GameParams.h"
 #include <iostream>
 #include <stdio.h>
 #include <time.h>
-#include "GameParams.h"
 #include <cmath>
 #include <chrono>
 #include <algorithm>

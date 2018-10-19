@@ -8,6 +8,8 @@
 #ifndef GAMEPARAMS_H_
 #define GAMEPARAMS_H_
 
+#include <vector>
+
 /* Window params */
 const double ASPECT_RATIO = 1.78;
 const int WINDOW_HEIGHT = 900;
