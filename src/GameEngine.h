@@ -25,7 +25,6 @@ private:
 	bool m_shouldClose;
 	PhysicsEngine *m_physEng;
 
-	void init();
 	void input();
 	void physics(double dt);
 	void graphics();

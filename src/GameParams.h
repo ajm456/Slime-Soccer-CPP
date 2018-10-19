@@ -67,7 +67,7 @@ const double GRAVITY = -4.81;
 const double GROUND_LEVEL = -0.7;
 const double GROUND_BALL_RESTI = 0.70;
 const double SLIME_BALL_RESTI = 0.60;
-const double HORIZ_CROSSBAR_HBOX_HEIGHT = 0.08;
+const double HORIZ_CROSSBAR_HBOX_HEIGHT = 0.05;
 
 /* Key params */
 const unsigned short KEY_W = 1;

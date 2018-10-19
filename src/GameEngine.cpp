@@ -18,17 +18,43 @@
 
 GameEngine::GameEngine()
 {
+	std::cout << "Initialising game engine..." << std::endl;
+	
+	// Initialise the window manager
+	m_wm = new WindowManager(WINDOW_HEIGHT * ASPECT_RATIO, WINDOW_HEIGHT);
+	
+	// Set the window's initial close flag
+	m_shouldClose = false;
+	
+	// Set the random seed
+	std::srand(time(0));
+	
+	// Load and shuffle colour list to determine team colours
+	std::vector<std::vector<float>> colorList(COLOR_LIST);
+	std::random_shuffle(colorList.begin(), colorList.end());
+	std::vector<float> leftColor = colorList[0];
+	std::vector<float> rightColor = colorList[1];
+	
+	// Initialise the initial game state
+	std::vector<SlimeData*> *slimeData = new std::vector<SlimeData*>();
+	SlimeData *slime1 = new SlimeData(-SLIME_INIT_X_RADIUS, SLIME_INIT_Y, leftColor[0], leftColor[1], leftColor[2], true);
+	SlimeData *slime2 = new SlimeData(SLIME_INIT_X_RADIUS, SLIME_INIT_Y, rightColor[0], rightColor[1], rightColor[2], false);
+	slimeData->push_back(slime1);
+	slimeData->push_back(slime2);
+	BallData *ball = new BallData(BALL_INIT_X, BALL_INIT_Y);
+	m_state = new GameState(slimeData, ball, leftColor, rightColor);
+
+	// Initialise the physics engine
+	m_physEng = new PhysicsEngine(m_state);
+
+	// Set the keyboard callbacks for input
+	m_wm->setupInput();
 }
 
-GameEngine::~GameEngine()
-{
-}
+GameEngine::~GameEngine() {}
 
 void GameEngine::run()
 {
-	std::cout << "Initialising game..." << std::endl;
-	init();
-
 	// Set time used for timestep calculation
 	using clock = std::chrono::high_resolution_clock;
 	auto currentTime = clock::now();
@@ -68,39 +94,6 @@ void GameEngine::run()
 	}
 
 	std::cout << "Gracefully exiting..." << std::endl;
-}
-
-void GameEngine::init()
-{
-	// Set the random seed
-	std::srand(time(0));
-	
-	// Load and shuffle colour list to determine team colours
-	std::vector<std::vector<float>> colorList(COLOR_LIST);
-	std::random_shuffle(colorList.begin(), colorList.end());
-	std::vector<float> leftColor = colorList[0];
-	std::vector<float> rightColor = colorList[1];
-	
-	
-	// Initialise the window manager
-	m_wm = new WindowManager(WINDOW_HEIGHT * ASPECT_RATIO, WINDOW_HEIGHT);
-
-	// Initialise the initial game state
-	std::vector<SlimeData*> *slimeData = new std::vector<SlimeData*>();
-	SlimeData *slime1 = new SlimeData(-SLIME_INIT_X_RADIUS, SLIME_INIT_Y, leftColor[0], leftColor[1], leftColor[2], true);
-	SlimeData *slime2 = new SlimeData(SLIME_INIT_X_RADIUS, SLIME_INIT_Y, rightColor[0], rightColor[1], rightColor[2], false);
-	slimeData->push_back(slime1);
-	slimeData->push_back(slime2);
-
-	BallData *ball = new BallData(BALL_INIT_X, BALL_INIT_Y);
-
-	m_state = new GameState(slimeData, ball, leftColor, rightColor);
-
-	// Initialise the physics engine
-	m_physEng = new PhysicsEngine(m_state);
-
-	// Set the keyboard callbacks for input
-	m_wm->setupInput();
 }
 
 void GameEngine::input()
